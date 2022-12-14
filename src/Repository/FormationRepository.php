@@ -14,6 +14,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Formation[]    findAll()
  * @method Formation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+
+const PUBLISHED_AT = 'f.publishedAt';
+ 
 class FormationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -73,22 +76,25 @@ class FormationRepository extends ServiceEntityRepository
         if($valeur==""){
             return $this->findAll();
         }
+        
+       
         if($table==""){
             return $this->createQueryBuilder('f')
                     ->where('f.'.$champ.' LIKE :valeur')
-                    ->orderBy('f.publishedAt', 'DESC')
+                    ->orderBy( PUBLISHED_AT, 'DESC')
                     ->setParameter('valeur', '%'.$valeur.'%')
                     ->getQuery()
-                    ->getResult();            
+                    ->getResult();                                
         }else{
             return $this->createQueryBuilder('f')
                     ->join('f.'.$table, 't')                    
                     ->where('t.'.$champ.' LIKE :valeur')
-                    ->orderBy('f.publishedAt', 'DESC')
+                    ->orderBy(PUBLISHED_AT, 'DESC')
                     ->setParameter('valeur', '%'.$valeur.'%')
                     ->getQuery()
-                    ->getResult();                   
-        }       
+                    ->getResult();                                      
+        }
+        
     }    
     
     /**
@@ -98,7 +104,7 @@ class FormationRepository extends ServiceEntityRepository
      */
     public function findAllLasted($nb) : array {
         return $this->createQueryBuilder('f')
-                ->orderBy('f.publishedAt', 'DESC')
+                ->orderBy(PUBLISHED_AT, 'DESC')
                 ->setMaxResults($nb)     
                 ->getQuery()
                 ->getResult();
@@ -114,7 +120,7 @@ class FormationRepository extends ServiceEntityRepository
                 ->join('f.playlist', 'p')
                 ->where('p.id=:id')
                 ->setParameter('id', $idPlaylist)
-                ->orderBy('f.publishedAt', 'ASC')   
+                ->orderBy(PUBLISHED_AT, 'ASC')   
                 ->getQuery()
                 ->getResult();        
     }
