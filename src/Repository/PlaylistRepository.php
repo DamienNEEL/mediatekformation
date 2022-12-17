@@ -75,15 +75,13 @@ class PlaylistRepository extends ServiceEntityRepository
      * ou tous les enregistrements si la valeur est vide
      * @param type $champ
      * @param type $valeur
-     * @param type $table si $champ dans une autre table
      * @return Playlist[]
      */
-    public function findByContainValue($champ, $valeur, $table=""): array{
+    public function findByContainValueWherePlaylist($champ, $valeur): array{
         if($valeur==""){
-            return $this->findAllOrderBy(NAME, 'ASC');
-        }    
-        if($table==""){      
-            return $this->createQueryBuilder(PLAYLIST_ALIAS)
+            return $this->findAllOrderBy(NAME, 'ASC');          
+        }
+        return $this->createQueryBuilder(PLAYLIST_ALIAS)
                     ->select(PLAYLIST_ALIAS.".".ID." ".ID)
                     ->addSelect(PLAYLIST_ALIAS.".".NAME." ".NAME)
                     ->addSelect(CATEGORIE_ALIAS.".".NAME." ".CATEGORIE.NAME)
@@ -96,24 +94,35 @@ class PlaylistRepository extends ServiceEntityRepository
                     ->orderBy(PLAYLIST_ALIAS.".".NAME, 'ASC')
                     ->addOrderBy(CATEGORIE_ALIAS.".".NAME)
                     ->getQuery()
-                    ->getResult();              
-        }else{   
-            return $this->createQueryBuilder('p')
-                    ->select(PLAYLIST_ALIAS.".".ID." ".ID)
-                    ->addSelect(PLAYLIST_ALIAS.".".NAME." ".NAME)
-                    ->addSelect(CATEGORIE_ALIAS.".".NAME." ".CATEGORIE.NAME)
-                    ->leftjoin(PLAYLIST_ALIAS.".".FORMATIONS, FORMATION_ALIAS)
-                    ->leftjoin(FORMATION_ALIAS.".".CATEGORIES, CATEGORIE_ALIAS)
-                    ->where(CATEGORIE_ALIAS.".".$champ.' LIKE :valeur')
-                    ->setParameter('valeur', '%'.$valeur.'%')
-                    ->groupBy(PLAYLIST_ALIAS.".".ID)
-                    ->addGroupBy(CATEGORIE_ALIAS.".".NAME)
-                    ->orderBy(PLAYLIST_ALIAS.".".NAME, 'ASC')
-                    ->addOrderBy(CATEGORIE_ALIAS.".".NAME)
-                    ->getQuery()
-                    ->getResult();              
-            
-        }           
+                    ->getResult();   
+    }
+    
+    /**
+     * Enregistrements dont un champ contient une valeur
+     * ou tous les enregistrements si la valeur est vide
+     * @param type $champ
+     * @param type $valeur
+     * @param type $table si $champ dans une autre table
+     * @return Playlist[]
+     */
+    public function findByContainValueWhereCategorie($champ, $valeur): array{
+        if($valeur==""){
+            return $this->findAllOrderBy(NAME, 'ASC');
+        }    
+        return $this->createQueryBuilder('p')
+                ->select(PLAYLIST_ALIAS.".".ID." ".ID)
+                ->addSelect(PLAYLIST_ALIAS.".".NAME." ".NAME)
+                ->addSelect(CATEGORIE_ALIAS.".".NAME." ".CATEGORIE.NAME)
+                ->leftjoin(PLAYLIST_ALIAS.".".FORMATIONS, FORMATION_ALIAS)
+                ->leftjoin(FORMATION_ALIAS.".".CATEGORIES, CATEGORIE_ALIAS)
+                ->where(CATEGORIE_ALIAS.".".$champ.' LIKE :valeur')
+                ->setParameter('valeur', '%'.$valeur.'%')
+                ->groupBy(PLAYLIST_ALIAS.".".ID)
+                ->addGroupBy(CATEGORIE_ALIAS.".".NAME)
+                ->orderBy(PLAYLIST_ALIAS.".".NAME, 'ASC')
+                ->addOrderBy(CATEGORIE_ALIAS.".".NAME)
+                ->getQuery()
+                ->getResult();
     }    
 
 
