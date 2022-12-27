@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 
 const PAGE_PLAYLISTS = "pages/playlists.html.twig";
+const PAGE_PLAYLIST = "pages/playlist.html.twig";
 
 class PlaylistsController extends AbstractController {
     
@@ -51,7 +52,7 @@ class PlaylistsController extends AbstractController {
      * @return Response
      */
     public function index(): Response{
-        $playlists = $this->playlistRepository->findAllOrderBy('name', 'ASC');
+        $playlists = $this->playlistRepository->findAllOrderByName('ASC');
         $categories = $this->categorieRepository->findAll();
         return $this->render(PAGE_PLAYLISTS, [
             'playlists' => $playlists,
@@ -66,7 +67,14 @@ class PlaylistsController extends AbstractController {
      * @return Response
      */
     public function sort($champ, $ordre): Response{
-        $playlists = $this->playlistRepository->findAllOrderBy($champ, $ordre);
+        switch($champ){
+            case "name":
+                $playlists = $this->playlistRepository->findAllOrderByName($ordre);
+                break;
+            case "nbformations":
+                $playlists = $this->playlistRepository->findAllOrderByNbFormations($ordre);
+                break;
+        }        
         $categories = $this->categorieRepository->findAll();
         return $this->render(PAGE_PLAYLISTS, [
             'playlists' => $playlists,
@@ -107,7 +115,7 @@ class PlaylistsController extends AbstractController {
         $playlist = $this->playlistRepository->find($id);
         $playlistCategories = $this->categorieRepository->findAllForOnePlaylist($id);
         $playlistFormations = $this->formationRepository->findAllForOnePlaylist($id);
-        return $this->render(PAGE_PLAYLISTS, [
+        return $this->render(PAGE_PLAYLIST, [
             'playlist' => $playlist,
             'playlistcategories' => $playlistCategories,
             'playlistformations' => $playlistFormations
