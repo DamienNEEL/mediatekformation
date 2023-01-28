@@ -26,12 +26,13 @@ class Formation
     private $id;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)     * 
      */
+    
     private $publishedAt;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)     
      */
     private $title;
 
