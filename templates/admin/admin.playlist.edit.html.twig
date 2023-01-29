@@ -1,0 +1,16 @@
+{% extends "baseadmin.html.twig" %}
+
+{%  block body %}
+    <h2>Détail playlist:</h2>
+    {{ include ('_admin.playlist.form.html.twig') }} 
+        {% for formation in formations %} 
+            {% if playlist.id == formation.playlist.id %}
+            <tr class="align-middle">
+                <td>
+                    <h5 class="text-info">
+                        {{ formation.title }}                           
+                    </h5>                        
+            </tr>
+            {% endif %}
+        {% endfor %}   
+{% endblock %}
