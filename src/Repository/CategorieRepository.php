@@ -23,6 +23,12 @@ class CategorieRepository extends ServiceEntityRepository
 
     public function add(Categorie $entity, bool $flush = false): void
     {
+        foreach ($this->findAll() as $categorie) {
+            $name=$categorie->getName();
+            if($entity->getName()== $name){
+                return;
+            }
+        }
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -32,7 +38,12 @@ class CategorieRepository extends ServiceEntityRepository
 
     public function remove(Categorie $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+            if($entity->getFormations()->isEmpty()){
+                $this->getEntityManager()->remove($entity);
+            }else{
+                
+            }
+         
 
         if ($flush) {
             $this->getEntityManager()->flush();
@@ -55,4 +66,14 @@ class CategorieRepository extends ServiceEntityRepository
                 ->getResult();        
     }    
 
+    /**
+     * Retourne la liste des catégories 
+     * @return array
+     */
+    public function findAll(): array{
+        return $this->createQueryBuilder('c') 
+                ->orderBy('c.name', 'ASC')   
+                ->getQuery()
+                ->getResult();        
+    }    
 }
