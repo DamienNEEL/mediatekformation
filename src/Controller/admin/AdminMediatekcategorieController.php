@@ -25,18 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author neeld
  */
-class AdminMediatekcategorieController extends AbstractController  {
-     /**
-     * 
-     * @var PlaylistRepository
-     */
-    private $playlistRepository;
-    
-    /**
-     * 
-     * @var FormationRepository
-     */
-    private $formationRepository;
+class AdminMediatekcategorieController extends AbstractController  {   
     
     /**
      * 
@@ -44,21 +33,19 @@ class AdminMediatekcategorieController extends AbstractController  {
      */
     private $categorieRepository;
     
-    function __construct(PlaylistRepository $playlistRepository, CategorieRepository $categorieRepository, FormationRepository $formationRepository) {
-        $this->playlistRepository = $playlistRepository;
+    function __construct(  CategorieRepository $categorieRepository) {
+        
         $this->categorieRepository= $categorieRepository;
-        $this->formationRepository= $formationRepository;
+        
     }
     
     /**
      * @Route("/admin/categorie", name="admin.categorie")
      * @return Response
      */
-    public function index(): Response{
-        $playlists = $this->playlistRepository->findAll();
+    public function index(): Response{       
         $categories = $this->categorieRepository->findAll();
-        return $this->render("admin/admin.categorie.html.twig", [
-            'playlists' => $playlists,
+        return $this->render("admin/admin.categorie.html.twig", [            
             'categories' => $categories
         ]);
     }
